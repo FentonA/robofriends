@@ -1,32 +1,54 @@
 import React, {Component} from 'react';
-import CardList from './CardList';
-import SearchBox from './SearchBox';
-import {robots} from './robots';
+import {  connect } from 'react-redux';
+import CardList from '../components/CardList';
+import SearchBox from '../components/SearchBox';
+import Scroll from '../components/Scroll';
+import ErrorBoundry from '../components/ErrorBoundry'
+import './App.css';
+
+import {setSearchField, requestRobots} from '../actions.js';
+
+const mapStateToProps = state =>{
+	return {
+		searchField: state.searchRobots.searchField,
+		robots: state.requestRobots.robots,
+		isPending: state.requestRobots.isPending,
+		error: state.requestRobots.error
+	}
+}
+
+const mapDispatchToProps = (dispatch) =>{
+	return {
+		onSearchChange: (event) => dispatch(setSearchField(event.target.value))
+		onRequesRobots: ()=> requestRobots(dispatch)
+	}
+}
+
 
 class App extends Component {
-	constructor(){
-		super()
-		this.state = {
-
-			robots: robots,
-			searchfield:''
-		}
-	}
-
-	onSearchChange = (event) => {
-		this.setState({searchfield: event.target.value})
-		
-		}
+	
+	
+componentDidMount(){
+	
+	this.props.onSearchRobots();
+}
 	
 	render() {
-		const filteredRobots = this.state.robots.filter(robots =>{
-			return robots.name.toLowerCase().includes(this.state.searchfield.toLowerCase());
+		const { searchField, onSearchChange, robot, isPenind } = this.props;
+		const filteredRobots = robots.filter(robot =>{
+			return robot.name.toLowerCase().includes(searchField.toLowerCase());
 		});
-	return(
+		
+	return isPending?
+	<h1>Loading</h1>(
 		<div className='tc'>
-		<h1>Robofriends</h1>
+		<h1 className='f2'>Robofriends</h1>
 		<SearchBox searchChange={this.onSearchChange}/>
-		<CardList robots={filteredRobots}/>
+		<Scroll>
+		<ErrorBoundry>
+			<CardList robots={filteredRobots}/>
+		</ErrorBoundry>
+		</Scroll>
 		</div>
 		);	
 	}
@@ -34,4 +56,5 @@ class App extends Component {
 }
 
 
-export default App;
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

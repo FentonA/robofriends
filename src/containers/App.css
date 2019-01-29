@@ -1,0 +1,13 @@
+
+@font-face {
+font-family: 'MB-InDigit';
+font-style: normal;
+font-weight: normal;
+src: local('MB-InDigit'), url('MB-InDigit_Font.woff') format('woff');
+}
+
+h1{
+	font-family: 'MB-InDigit';
+	font-weight: 200;
+	color:orange; 
+}
